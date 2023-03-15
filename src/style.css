@@ -23,6 +23,11 @@ button {
 button:hover {
     background-color: #45627d;
 }
+
+button:active {
+background-color: #1e3041;
+}
+
 button:focus-visible {
     box-shadow: inset 0 0 0 2px #45627d, inset 0 0 0 4px #6589ab;
 }
@@ -232,8 +237,13 @@ input[type="checkbox"]:checked {
     padding: 1rem;
 }
 
-.recipe-edit-save-button, .recipe-edit-cart-button {
+recipe-edit-cancel-button,
+.recipe-edit-cart-button {
     flex: 1;
+}
+
+.recipe-edit-save-button {
+    flex: 2;
 }
 
 .recipe-ingredient-delete-button {
@@ -292,4 +302,28 @@ input[type="checkbox"]:checked {
     display: flex;
     gap: 0.5rem;
     padding: 1rem;
+}
+
+.button--danger {
+    background-color: #c92a2a;
+}
+
+.button--danger:hover {
+    background-color: #e53e3e;
+}
+
+.button--danger:active {
+    background-color: #c92a2a;
+}
+
+.button--ok {
+    background-color: #0a7337;
+}
+
+.button--ok:hover {
+    background-color: #0e8a46;
+}
+
+.button--ok:active {
+    background-color: #0a7337;
 }

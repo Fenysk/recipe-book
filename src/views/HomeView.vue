@@ -141,9 +141,17 @@
       <div class="recipe-edit-actions">
 
         <button
+            @click="cancelEdit"
+
+            class="recipe-edit-cancel-button button--danger"
+        >
+          Cancel
+        </button>
+
+        <button
             @click="saveRecipe(recipeToEdit)"
 
-            class="recipe-edit-save-button"
+            class="recipe-edit-save-button button--ok"
         >
           Save
         </button>
@@ -199,12 +207,12 @@
         <button
             @click="clearCheckedItems"
 
-            class="shopping-list-clear-button">Clear checked items
+            class="shopping-list-clear-button button--ok">Clear checked items
         </button>
         <button
             @click="clearAllItems"
 
-            class="shopping-list-clear-button">Clear all
+            class="shopping-list-clear-button button--danger">Clear all
         </button>
 
         <button
@@ -325,8 +333,8 @@ export default {
     },
 
     editRecipe(recipe) {
-      this.editMode = !this.editMode
       this.recipeToEdit = Object.assign({}, recipe)
+      this.editMode = true
     },
 
     addIngredient(recipe) {
@@ -344,9 +352,13 @@ export default {
       })
     },
 
+    cancelEdit() {
+      this.editMode = false
+    },
+
     saveRecipe(recipe) {
       this.recipesList[recipe.id] = recipe
-      this.editMode = !this.editMode
+      this.editMode = false
     },
 
     addIngredientsToShoppingList(recipe) {
