@@ -6,7 +6,7 @@
 
     <!-- LIST MODE -->
     <div
-        v-if="editMode === false"
+        v-if="editMode === false && shoppingListMode === false"
 
         class="list_mode"
     >
@@ -60,6 +60,14 @@
           </div>
         </div>
       </div>
+
+      <button
+          @click="shoppingListMode = !shoppingListMode"
+
+          class="shopping-list-button"
+      >
+        Shopping List
+      </button>
 
     </div>
 
@@ -141,7 +149,7 @@
         </button>
 
         <button
-            @click="addRecipeToShoppingList(recipeToEdit)"
+            @click="addIngredientsToShoppingList(recipeToEdit)"
 
             class="recipe-edit-cart-button"
         >
@@ -151,6 +159,65 @@
       </div>
 
     </div>
+
+    <!-- SHOPPING LIST MODE -->
+    <div
+        v-if="shoppingListMode === true"
+
+        class="shopping-list"
+    >
+      <h2 class="shopping-list-title">Shopping list</h2>
+
+      <p
+          v-if="shoppingList.length === 0"
+          style="text-align: center; font-size: 1.2rem; font-weight: 600"
+      >
+        Your shopping list is empty
+      </p>
+
+      <ul class="recipe-ingredients-list">
+
+        <li
+            v-for="ingredient in shoppingList" :key="ingredient.id"
+
+            class="recipe-ingredient">
+          <label class="shopping-list-item">
+            <input
+                v-model="ingredient.checked"
+
+                type="checkbox"
+            />{{ ingredient.name }}</label>
+        </li>
+
+      </ul>
+      <div class="shopping-list-actions">
+        <button
+            @click="checkAllItems"
+
+            class="shopping-list-clear-button">Check all
+        </button>
+        <button
+            @click="clearCheckedItems"
+
+            class="shopping-list-clear-button">Clear checked items
+        </button>
+        <button
+            @click="clearAllItems"
+
+            class="shopping-list-clear-button">Clear all
+        </button>
+
+        <button
+            @click="shoppingListMode = !shoppingListMode"
+
+            class="shopping-list-close-button"
+            style="margin-left: auto"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+
   </div>
 
 
@@ -168,6 +235,9 @@ export default {
       newIngredientName: '',
 
       recipeToEdit: null,
+
+      editMode: false,
+      shoppingListMode: false,
 
       recipesList: [
         {
@@ -230,8 +300,7 @@ export default {
           ]
         }
       ],
-
-      editMode: false,
+      shoppingList: []
 
     }
   },
@@ -270,12 +339,69 @@ export default {
 
     deleteIngredient(ingredient) {
       this.recipeToEdit.ingredients.splice(this.recipeToEdit.ingredients.indexOf(ingredient), 1)
+      this.recipeToEdit.ingredients.forEach((ingredient, index) => {
+        ingredient.id = index
+      })
     },
 
     saveRecipe(recipe) {
       this.recipesList[recipe.id] = recipe
       this.editMode = !this.editMode
     },
+
+    addIngredientsToShoppingList(recipe) {
+      for (let ingredient of recipe.ingredients) {
+        this.checkIfNotExist(ingredient)
+      }
+
+      this.shoppingListMode = true
+      this.editMode = false
+    },
+
+    checkIfNotExist(ingredient) {
+      if (this.shoppingList.length > 0) {
+        let ingredientAlreadyInShoppingList = false
+        for (let shoppingListIngredient of this.shoppingList) {
+          if (ingredient.name === shoppingListIngredient.name) {
+            ingredientAlreadyInShoppingList = true
+          }
+        }
+        if (!ingredientAlreadyInShoppingList) {
+          this.shoppingList.push(
+              {
+                id: this.shoppingList.length,
+                name: ingredient.name,
+                checked: false
+              }
+          )
+        }
+      } else {
+        this.shoppingList.push(
+            {
+              id: this.shoppingList.length,
+              name: ingredient.name,
+              checked: false
+            }
+        )
+      }
+    },
+
+    checkAllItems() {
+      for (let ingredient of this.shoppingList) {
+        ingredient.checked = true
+      }
+    },
+
+    clearCheckedItems() {
+      this.shoppingList = this.shoppingList.filter(ingredient => !ingredient.checked)
+      this.shoppingList.forEach((ingredient, index) => {
+        ingredient.id = index
+      })
+    },
+
+    clearAllItems() {
+      this.shoppingList = []
+    }
 
   },
 
